@@ -45,10 +45,3 @@ void matryca() {
 	        << tapeta.size() - minOdleglosci << "\n";
 }
 
-int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
-	matryca();
-	return 0;
-}
