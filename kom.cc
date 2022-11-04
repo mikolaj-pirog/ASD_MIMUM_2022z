@@ -1,6 +1,7 @@
 #include <iostream>
-#include <unordered_set>
 #include <vector>
+#include <algorithm>
+#include <numeric>
 
 using namespace std;
 
@@ -16,6 +17,8 @@ void komitet() {
 	vector<int> dane(n);
 	vector<int> najblizszeL(n);
 	vector<int> najdalszeK(n);
+
+	sort(dane.begin(), dane.end());
 
 	for (int i = 0; i < n; i++)
 		cin >> dane[i];
@@ -34,6 +37,19 @@ void komitet() {
 
 	printVector(najblizszeL);
 
+
+	indeksSprawdzany = n - 1;
+	for(int i = n - 1; i >= 0;) {
+		if (dane[indeksSprawdzany] - dane[i] <= k) {
+			najdalszeK[indeksSprawdzany] = i;
+			i--;
+		} else {
+			indeksSprawdzany--;
+			najdalszeK[indeksSprawdzany] = najdalszeK[indeksSprawdzany + 1];
+		}
+	}
+
+	printVector(najdalszeK);
 }
 
 int main() {
