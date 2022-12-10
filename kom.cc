@@ -73,14 +73,13 @@ void komitet() {
 		if (najdalszLapiacyNielapanego > najblizszyInnyPrzedstawiciel) /* Jeśli prawda, to znaczy, że nie mogę być wzięty - bo istnieje element, którego zwyczajnei nie da się wziąć */ {
 			minima[i] = -1;
 		} else {// Musimy potencjalnie zwiększyć minimum
-			// przez to się wydłuża, spróbuj dać min = stare + 1, i wnynik komb = 0
 			int64_t minimum = 0;
-			for(; najdalszLapiacyNielapanego <= i && minimum == 0 && najdalszLapiacyNielapanego <= najblizszyInnyPrzedstawiciel ; najdalszLapiacyNielapanego++)
+			for (; najdalszLapiacyNielapanego <= i && minimum == 0 && najdalszLapiacyNielapanego <= najblizszyInnyPrzedstawiciel; najdalszLapiacyNielapanego++)
 				minimum = minima[najdalszLapiacyNielapanego] + 1;
 
 			najdalszLapiacyNielapanego--;
 
-			if (minimum == 0 )
+			if (minimum == 0)
 				minimum = -1;
 
 			if (minimum > sumyCzescioweRozmiarowMinimow.size()) {
@@ -93,8 +92,6 @@ void komitet() {
 		if (minima[i] == -1 || minima[najdalszLapiacyNielapanego] == -1) {
 			wynikCzesciowy[i] = 0;
 		} else {
-			if (minima[najdalszLapiacyNielapanego] + 1 < minima[i])
-				cout <<" ZLEEE\n";
 			if (najdalszLapiacyNielapanego == 0) {
 				wynikCzesciowy[i] = sumaCzeciowaWynik[min(sumyCzescioweRozmiarowMinimow[0] - 1, najblizszyInnyPrzedstawiciel)];
 			} else {
@@ -102,26 +99,10 @@ void komitet() {
 			}
 		}
 
-		if (wynikCzesciowy[i] < 0) {
-			cout << "Zle";
-			return ;
-		}
 
 		sumaCzeciowaWynik[i] = (sumaCzeciowaWynik[i - 1] + wynikCzesciowy[i]) % Mod;
-		if (sumaCzeciowaWynik[i] < 0) {
-			cout << "Zle22";
-			return ;
-		}
 	}
-	//Sprobuj wypisac ostatnie sumy, wraz z ich minimami, lapaniem, oraz ogolne min
-	/*
-	print64_tVector(najblizszeL);
-	print64_tVector(najdalszeK);
-	print64_tVector(minima);
-	print64_tVector(sumyCzescioweRozmiarowMinimow);
-	print64_tVector(wynikCzesciowy);
-	print64_tVector(sumaCzeciowaWynik);
-	 */
+
 	int64_t min = -1;
 	int64_t i;
 	for (i = 0; min == -1; i++)
@@ -133,7 +114,7 @@ void komitet() {
 	else
 		suma = sumaCzeciowaWynik[sumyCzescioweRozmiarowMinimow[min - 1] - 1];
 
-	
+
 	cout << min << " " << suma << "\n";
 }
 

@@ -1,96 +1,72 @@
 #include <algorithm>
 #include <iostream>
-#include <set>
 #include <vector>
 
 using namespace std;
 
+int neareastPow2(int n) {
+	int i = 1;
+	for (; i < n;) { i *= 2; }
 
-auto cmp = [](pair<int, int> lhs, pair<int, int> rhs) {//Przedziały są definicje rozłączne parami. Dlatego to działa.
-	if (lhs.first >= rhs.first)
-		return true;
+	return i;
+}
 
-	return false;
+constexpr int Mod = 1e9;
+
+class seqTree {
+public:
+	vector<pair<char, int>> tree;
+	static int B;
+
+	seqTree(int n) : tree(2 * neareastPow2(n) + 1, pair('C', 0)){};
+
+	void insert_interval(int a, int b, char color, int l = 1, int r = B, int indeks = 1) {
+		if (a <= l && r <= b) {
+			tree[indeks].first = color;
+			int nowaSuma = color == 'B' ? r - l + 1 : 0;
+			tree[indeks].second = nowaSuma;
+			return;
+		}
+
+		if (tree[indeks].first != 'S') {
+			tree[2 * indeks].first = tree[indeks].first;
+			tree[2 * indeks].second = tree[indeks].second / 2;
+			tree[2 * indeks + 1].first = tree[indeks].first;
+			tree[2 * indeks + 1].second = tree[indeks].second / 2;
+			tree[indeks].first = 'S';
+		}
+
+		if ((l + r) / 2 >= a && tree[2 * indeks].first != color)
+			insert_interval(a, b, color, l, (l + r) / 2, 2 * indeks);
+
+		if ((l + r) / 2 + 1 <= b && tree[2 * indeks + 1].first != color)
+			insert_interval(a, b, color, (l + r) / 2 + 1, r, 2 * indeks + 1);
+
+		tree[indeks].second = tree[2 * indeks].second + tree[indeks * 2 + 1].second;
+	}
 };
 
-void malowanie() {
-	int n, m;
+
+int seqTree::B;
+
+void mal() {
+	int n, m, a, b;
+	char c;
 	cin >> n >> m;
-	set<pair<int, int>, decltype(cmp)> autostrada(cmp);
-	autostrada.insert(pair(0, n));
-	//autostrada.insert(pair(1, 5));
-	//autostrada.insert(pair(3, 3));
-	//auto wyn = autostrada.lower_bound(pair(3, 5));
-	//cout << wyn->first << " " << wyn->second;
-	//printSet(autostrada);
+	seqTree tree(n);
+	seqTree::B = neareastPow2(n);
+
 	for (int i = 0; i < m; i++) {
-		bool nieUsuwamy = false;
-		char malowanie;
-		int pocz, kon;
-		cin >> pocz >> kon >> malowanie;
-		if (malowanie == 'C') {
-			auto odcinek = pair(pocz, kon);
-			auto inf = autostrada.lower_bound(odcinek);
-			auto sup = autostrada.upper_bound(odcinek);
-			auto poczUsuwanie = inf;
-			auto konUsuwanie = sup;
-			if (inf != autostrada.end() && inf == sup) {
-				auto infW = *inf;
-				auto supW = *sup;
-				autostrada.erase(inf);
-				if (infW.first <= pocz - 1)
-					autostrada.insert(pair(infW.first, pocz - 1));
-				if (supW.second >= kon + 1)
-					autostrada.insert(pair(kon + 1, supW.second));
-			} else {
-				if (inf == autostrada.end()) {
-					poczUsuwanie = autostrada.begin();
-				} else {
-					auto infW = *inf;
-					if (infW.second >= pocz) {
-						poczUsuwanie++;
-						if (poczUsuwanie == autostrada.end())
-							nieUsuwamy = true;
-						autostrada.erase(inf);
-						if (infW.first <= pocz - 1)
-							autostrada.insert(pair(infW.first, pocz - 1));
-					} else {
-						poczUsuwanie++;
-					}
-				}
-
-				if (sup == autostrada.end()) {
-					konUsuwanie = autostrada.end();
-					konUsuwanie--;
-				} else {
-					auto supW = *sup;
-					if (supW.first <= kon) {
-						if (konUsuwanie == autostrada.begin())
-							nieUsuwamy = true;
-						else
-							konUsuwanie--;
-						autostrada.erase(sup);
-						if (supW.second >= kon + 1)
-							autostrada.insert(pair(kon + 1, supW.second));
-					} else {
-						konUsuwanie--;
-					}
-				}
-			}
-
-			if (!nieUsuwamy && *poczUsuwanie <= *konUsuwanie)
-				autostrada.erase(poczUsuwanie, konUsuwanie);
-		}
+		cin >> a >> b >> c;
+		tree.insert_interval(a, b, c);
+		cout << tree.tree[1].second << "\n";
 	}
-
-	for (auto el: autostrada)
-		cout << el.first << " " << el.second << "\n";
 }
 
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 	cout.tie(nullptr);
-	malowanie();
+	mal();
 	return 0;
 }
