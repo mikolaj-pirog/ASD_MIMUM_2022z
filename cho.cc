@@ -16,7 +16,6 @@ int neareastPow2(int n) {
     return i;
 }
 
-
 struct node {
     map<int, int> left;
     map<int, int> right;
@@ -30,7 +29,6 @@ dfs(vector<set<int>> &children, vector<node> &result, vector<pair<int, int>> &de
     for (auto el: children[i]) {
         end = dfs(children, result, descendants, el);
     }
-
     descendants[i] = pair<int, int>(begin, end);
 
     return end;
@@ -42,11 +40,9 @@ void color(int i, int color, vector<node> &tree, bool isFirst) {
         for (int j = i; j != 0; j /= 2) {
             if (isLeft) {
                 tree[j].left[color]++;
-
             } else {
                 tree[j].right[color]++;
             }
-
             if (j % 2 == 0)
                 isLeft = true;
             else
@@ -64,7 +60,6 @@ void color(int i, int color, vector<node> &tree, bool isFirst) {
                     tree[j].left[toDelete]--;
 
                 tree[j].left[color]++;
-
             } else {
                 int deleteCount = tree[j].right[toDelete];
                 if (deleteCount == 1)
@@ -81,7 +76,6 @@ void color(int i, int color, vector<node> &tree, bool isFirst) {
                 isLeft = false;
         }
     }
-
 }
 
 bool transferColors(map<int, int> &dest, map<int, int> &source) {
@@ -108,7 +102,6 @@ bool isSolidColor(vector<node> &tree, pair<int, int> descendants) {
 
         }
 
-
         if (begin % 2 == 0)
             isBl = true;
         else
@@ -116,13 +109,10 @@ bool isSolidColor(vector<node> &tree, pair<int, int> descendants) {
 
         begin /= 2;
 
-
         if (isRl) {
             if (!transferColors(colors, tree[end].left))
                 return false;
-
         }
-
 
         if (end % 2 != 0)
             isRl = true;
@@ -136,22 +126,14 @@ bool isSolidColor(vector<node> &tree, pair<int, int> descendants) {
             if (!(fir->second == 1 || snd->second == 1))
                 return false;
         }
-
     }
 
     return true;
 }
 
 void cho() {
-   // string dump;
     int n, q;
     cin >> n >> q;
-   // cout << n << endl;
-
-    //dump.append(to_string(n));
-    //dump.append("|");
-    //dump.append(to_string(q));
-    //dump.append("|");
     vector<set<int>> children(n + 1);
     B = neareastPow2(n);
     vector<node> nodes(B + 1);
@@ -159,8 +141,6 @@ void cho() {
     for (int i = 2; i <= n; i++) {
         int tmp;
         cin >> tmp;
-        //dump.append(to_string(tmp));
-        //dump.append("|");
         children[tmp].insert(i);
     }
 
@@ -170,8 +150,6 @@ void cho() {
     for (int i = 1; i <= n; i++) {
         int c;
         cin >> c;
-       // dump.append(to_string(c));
-        //dump.append("|");
         color(descendants[i].first, c, nodes, true);
     }
 
@@ -186,11 +164,6 @@ void cho() {
         } else {
             int b;
             cin >> b;
-         //   dump.append(to_string(b));
-          //  dump.append("|");
-            //cout << dump;
-          //  dump.pop_back();
-          //  dump.pop_back();
             if (isSolidColor(nodes, descendants[b]))
                 cout << "TAK\n";
             else
